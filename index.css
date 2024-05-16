@@ -1,0 +1,250 @@
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+/*
+* Author      : Neelanjan Acharya
+* Employee ID : 12117976
+* Email       : Neelanjan.Acharya@rci.rogers.ca
+*/
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5em;
+    font-weight: 600;
+    line-height: 1.7em;
+    color: #ee2722;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    overflow: auto;
+}
+
+.formbold-main-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  width: 100%;
+  position: fixed;
+  overflow: auto;
+}
+
+.formbold-mb-5 {
+  margin-bottom: 20px;
+}
+/* ---------------------------------------------------
+    NAVBAR STYLE
+----------------------------------------------------- */
+
+.navbar {
+    padding: 10px 5px;
+    background: #fff;
+    border-radius: 1rem;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+
+#carrier-chart {
+    float: right;
+    margin: 10 auto;
+}
+
+#tech-chart {
+    float: right;
+    margin: 10 auto;
+}
+
+/* ---------------------------------------------------
+    END NAVBAR STYLE
+----------------------------------------------------- */
+
+/* ---------------------------------------------------
+    PARAGRAPH STYLING FOR CARRIER CARDS
+----------------------------------------------------- */
+#throughput_text {
+    float: right;
+}
+
+#firstCol_text {
+    float: left;
+    color: black;
+    width: 20%;
+    margin: 0 1%
+}
+
+#secondCol_text {
+    color: black;
+    float: left;
+    width: 20%
+}
+
+#thirdCol_text {
+    color: black;
+    float: left;
+    width: 40%;
+    margin: 0 1%
+}
+
+
+/* ---------------------------------------------------
+    SIDEBAR ADVANCED STYLE
+----------------------------------------------------- */
+
+#sidebar-advanced {
+    min-width: 285px;
+    max-width: 285px;
+    background: #ee2722;
+    color: #fff;
+    transition: all 0.3s;
+    top: 90px;
+    z-index: 1;
+    border: solid 2px #000000;
+    position: absolute;
+}
+
+#sidebar-advanced.active {
+    margin-left: -285px;
+}
+
+#sidebar-advanced .sidebar-header {
+    padding: 20px;
+    background: #ee2722;
+}
+
+#sidebar-advanced ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar-advanced ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar-advanced ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+
+#sidebar-advanced ul li a:hover {
+    /* color: #7386D5; */
+    color: #f7f73c;
+    /* background: #fff; */
+    background: #ee2722;
+}
+
+#sidebar-advanced ul li.active>a,
+a[aria-expanded="true"] {
+    color: #fff;
+    background: #ee2722;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #ee2722;
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+a.download {
+    background: #fff;
+    color: #7386D5;
+}
+
+a.article, a.article:hover {
+    background: #6d7fcc !important;
+    color: #fff !important;
+}
+/* ---------------------------------------------------
+    END SIDEBAR STYLE
+----------------------------------------------------- */
+
+.progress-fill {
+  height: 16px;
+  width: 0%;
+  border-radius: 5px;
+  background: #f5b935;
+  transition: width 0.5s;
+}
+
+table, th, td {
+    border: 2px solid black;
+}
+
+caption {
+    font-size: 30px;
+    line-height: 36px;
+    color: black;
+    caption-side: top;
+}
+
+.modal.modal-wide .modal-dialog {
+    width: 90%;
+  }
+  
+  .modal-wide .modal-body {
+    overflow-y: auto;
+}
+
+label#tbsCheckbox ~ span {
+    display: inline-block;
+    width: 180px;
+}
+
+dl {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+

@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--
+* Author      : Neelanjan Acharya
+* Employee ID : 12117976
+* Email       : Neelanjan.Acharya@rci.rogers.ca
+-->
+
+  <head>
+    <title>Cell Throughput Calculator V2.0</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/danfojs@1.1.0/lib/bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src='index.js'></script>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.plot.ly/plotly-2.18.2.min.js"></script>
+    <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> -->
+  </head>
+
+  <body>
+	<div class='wrapper'>
+		<div id="content">
+			<!-- /* ****************************************************
+				Navbar Top
+			************************************************************ / -->
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<!-- Rogers Logo -->
+				<a class="navbar-brand">
+					<img src="https://images.ctfassets.net/8utyj17y1gom/2JXnJrw79KkQOiOMia8Au2/9cbfc2fda65fa5a2127d5b0668d84765/rogers-brand.png" width=150 height=30>
+				</a>
+				<!-- End Rogers Logo -->
+
+				<!-- Navbar Buttons -->
+				<ul class="nav nav-pills" id="pills-tab" style="margin-left: 1rem">
+
+					<li class="nav-item">
+						<button class="nav-link" id="pills-basic-tab" style="background: #ee2722, color: #fafafa" onclick="sidebarBasic();">Basic User</button>
+					</li>
+					<li class="nav-item" style="margin-left: 0.5rem;">
+						<button class="nav-link" id="pills-advanced-tab" onclick="sidebarAdvanced();">Advanced User</button>
+					</li>
+					<li class="nav-item" id="addLi" style="margin-left: 0.5rem;">
+						<button class="nav-link" id="pills-agg-tab" onclick="multipleCarrier();">Add Carrier</button>
+					</li>
+					<li class="nav-item" id="deleteLi" style="display:none; margin-left: 0.5rem">
+						<button class="nav-link" id="pills-agg-tab" onclick="deleteCarrier();">Delete Carrier</button>
+					</li>
+					<li class="nav-item" style="margin-left: 0.5rem;">
+						<button class="nav-link" id="pills-agg-tab" data-toggle="modal" data-target="#calculationModal">Calculations</button>
+					</li>
+					<li class="nav-item" style="margin-left: 0.5rem;">
+						<button class="nav-link" id="pills-agg-tab" data-toggle="modal" data-target="#tableModal">MCS Tables</button>
+					</li>
+					<li class="nav-item" style="margin-left: 0.5rem;">
+						<button class="nav-link" id="pills-agg-tab" data-toggle="modal" data-target="#NRtableModal">NR RB Tables</button>
+					</li>
+					<li class="nav-item" style="margin-left: 0.5rem;">
+						<button class="nav-link" id="pills-basic-tab" style="background: #ee2722, color: #fafafa" onClick="window.location.reload()">Reset</button>
+					</li>
+				</ul>
+				<!-- End Navbar Buttons -->
+			</nav>
+			<!-- /* ****************************************************
+				End Navbar Top
+			************************************************************ / -->
+
+			<!-- Highlight basic user everytime page is loaded -->
+			<script>
+				jQuery(function(){
+				jQuery('#pills-basic-tab').click();
+				});
+			</script>
+
+			<!-- Reformatting throughput total and pie charts  -->
+			<div class="card-deck" style="width: 95%;" id="multiCalculation">
+				<div style="width: 95%; overflow: hidden;" class="card-deck">
+					<div class="card" style="float: left; margin-left: 19rem;">
+						<div class="card-body">
+							<h5 class="card-title" style="text-align: center; font-size: 1em; font-weight: 500;" id="multiCalculation_title">Total Maximum Throughput</h5>
+							<p class="card-text" style="font-size: 1.6em; line-height: 1.7em; font-weight: 700; text-align: center;" id="multiCalculation_text">0 Mbps</p>
+							<p class="card-text" style="font-size: 1em; line-height:1.7em; font-weight:700; text-align: left;" id="multiCalc_download"></p>
+							<h6 class="card-text" style="text-align: left; font-size: 0.8em; font-weight: 500;" id="multiCalculation_carriers"></h5>
+						</div>
+					</div>
+
+					<div class="card" style="float: left;margin-left:0rem">
+						<div class="card-img-center" id="carrier-chart"></div>
+					</div>
+
+					<div class="card" style="float: left;margin-left:0.1rem">
+						<div class="card-img-center" id="tech-chart"></div>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Adding pie charts-->
+
+			<br>
+
+			<div class="card-deck" style="width: 95%;" id="calcCardDeck0">
+				<!-- Maximum Throughput Deck -->
+				<div style="width: 95%; overflow: hidden; margin-top: 0.5rem;" class="card-deck">
+					<div class="card" style="float: left; margin-left: 19rem">
+						<div class="card-body" style="height:190px;">
+							<p class="card-title" style="text-align: left; font-size: 1.5em" id="carrierHeader">Carrier 0</p>
+							<!-- <h5 class="card-title" id="throughput_title" style="text-align: center; font-size: 1.2em; font-weight: 500;">Maximum Throughput</h5> -->
+							<p id="firstCol_text" style="font-size: 0.8em; line-height: 1.7em; font-weight: 500; text-align: left;"></p>
+							<p id="secondCol_text" style="font-size: 0.8em; line-height: 1.7em; font-weight: 500; text-align: left;"></p>
+							<p id="thirdCol_text" style="font-size: 0.8em; line-height: 1.7em; font-weight: 500; text-align: left;"></p>
+							<p id="throughput_text" style="font-size: 1.5em; line-height: 1.7em; font-weight: 700; text-align: right;"> 0 Mbps </p>
+						</div>
+					</div>
+					<!-- End Maximum Throughput Deck -->
+				</div>
+			</div>
+
+			<!-- Duplicate div -->
+			<div class="card-deck" style="width: 95%; display: none" id="calcCardDeck">
+				<!-- Scaling Factor Deck -->
+				<div style="width: 95%; overflow: hidden; margin-top: 0.5rem;" class="card-deck">
+					<div class="card" style="float: left; margin-left: 19rem">
+						<div class="card-body" style="height:190px;">
+							<p class="card-title" style="text-align: left; font-size: 1.5em" id="carrierHeader"></p>
+							<p class="card-text" id="firstCol_text" style="font-size: 0.8em; line-height: 1.7em; font-weight: 500; text-align: left;"></p>
+							<p id="secondCol_text" style="font-size: 0.8em; line-height: 1.7em; font-weight: 500; text-align: left;"></p>
+							<p id="thirdCol_text" style="font-size: 0.8em; line-height: 1.7em; font-weight: 500; text-align: left;"></p>
+							<p id="throughput_text" style="font-size: 1.5em; line-height: 1.7em; font-weight: 700; text-align: right;"> 0 Mbps </p>
+						</div>
+					</div>
+				<!-- End Scaling Factor Deck -->
+				</div>
+			</div>
+		</div>
+		
+		<!-- /* ****************************************************
+            ROGERS Logo Bottom
+        ************************************************************ / -->
+		<div style="bottom: 1vh; right: 1vw; width: 15vw; position: fixed; z-index:-1">
+			<label style="font-size: 10px">Throughput Calculator - Version 2.0<br> Developed by Wireless Access Network Expansion (WANE)</label><br>
+		</div>
+        <!-- /* ****************************************************
+            End ROGERS Logo Bottom
+        ************************************************************ / -->
+
+	</div>
+
+	<!-- /* ****************************************************
+        Sidebar
+      ************************************************************ / -->
+	<nav id="sidebar-advanced">
+		<!-- SideBar Header -->
+		<div class="sidebar-header">
+			<h3>UE Throughput Variables</h3>
+		</div>
+		<!-- End SideBar Header -->
+
+		<!-- User Selection Dropdowns -->
+		<li class="active" style="list-style-type: none">
+			<a aria-expanded="false" class="dropdown-toggle">Technology</a> <!-- data-toggle="collapse" class="collapse list-unstyled" -->
+			<ul class="list-unstyled" id="technologyMenu">
+				<li>
+					<div>
+						<select name="technology" id="technology" class="custom-select custom-select-sm" onchange="onchangeTechnology();">
+							<option class='placeholder' selected="selected">Select Technology</option>
+							<option value="NR">NR</option>
+							<option value="LTE">LTE</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" style="list-style-type: none">
+			<a aria-expanded="false" class="dropdown-toggle">UpLink/DownLink</a>
+			<ul class="list-unstyled" id="uldlMenu">
+				<li>
+					<div>
+						<select name="uldl" id="uldl" class="custom-select custom-select-sm" onchange="onchangeULDL();">
+							<option class='placeholder' selected="selected">Select UpLink/DownLink</option>
+							<option value="dl">DownLink</option>
+							<option value="ul">UpLink</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" id="frequencyList" style="list-style-type: none">
+			<a aria-expanded="false" class="dropdown-toggle">Band Frequency</a>
+			<ul class="list-unstyled" id="frequencyMenu">
+				<li>
+					<div>
+						<select name="frequency" id="frequency" class="custom-select custom-select-sm" onchange="frequencyOnchange();">
+							<option class='placeholder' selected="selected">Select Band Frequency</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" id="framePatternList" style="display: none; list-style-type: none">
+			<a aria-expanded="false" class="dropdown-toggle">Frame Pattern</a>
+			<ul class="list-unstyled" id="framePatternMenu">
+				<li>
+					<div>
+						<select name="framePattern" id="framePattern" class="custom-select custom-select-sm">
+							<option class='placeholder' selected="selected">Select Frame Pattern</option>
+							<option value="TDD_ULDL_PATTERN_00">TDD_ULDL_PATTERN_00 (DDSU)</option>
+							<option value="TDD_ULDL_PATTERN_01">TDD_ULDL_PATTERN_01 (DDDSUUDDDD)</option>
+							<option value="TDD_ULDL_PATTERN_02">TDD_ULDL_PATTERN_02 (DDDSU)</option>
+							<option value="TDD_ULDL_PATTERN_03">TDD_ULDL_PATTERN_03 (DDDSUDDSUU)</option>
+							<option value="TDD_ULDL_PATTERN_04">TDD_ULDL_PATTERN_04 (DDDDDDDSUU)</option>
+							<option value="TDD_ULDL_PATTERN_05">TDD_ULDL_PATTERN_05 (DDSUU)</option>
+							<option value="TDD_ULDL_PATTERN_06">TDD_ULDL_PATTERN_06 (DSUUU)</option>
+							<option value="TDD_ULDL_PATTERN_07">TDD_ULDL_PATTERN_07 (DDDSUUDSUU)</option>
+							<option value="TDD_ULDL_PATTERN_08">TDD_ULDL_PATTERN_08 (DDDSUUUUDD)</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" id="frameSpecialPatternList" style="display: none; list-style-type: none">
+			<a aria-expanded="false" class="dropdown-toggle">Special Slot Pattern</a>
+			<ul class="list-unstyled" id="frameSpecialPatternMenu">
+				<li>
+					<div>
+						<select name="frameSpecialPattern" id="frameSpecialPattern" class="custom-select custom-select-sm">
+							<option class='placeholder' selected="selected"> Select Special Frame Pattern </option>
+							<option value="TDD_SPECIAL_SLOT_PATTERN_00">TDD_SPECIAL_SLOT_PATTERN_00 (11:3:0)</option>
+							<option value="TDD_SPECIAL_SLOT_PATTERN_01">TDD_SPECIAL_SLOT_PATTERN_01 (3:8:3)</option>
+							<option value="TDD_SPECIAL_SLOT_PATTERN_02">TDD_SPECIAL_SLOT_PATTERN_02 (10:2:2)</option>
+							<option value="TDD_SPECIAL_SLOT_PATTERN_03">TDD_SPECIAL_SLOT_PATTERN_03 (6:4:4)</option>
+							<option value="TDD_SPECIAL_SLOT_PATTERN_04">TDD_SPECIAL_SLOT_PATTERN_04 (4:6:4)</option>
+							<option value="TDD_SPECIAL_SLOT_PATTERN_05">TDD_SPECIAL_SLOT_PATTERN_05 (6:8:0;010:4)</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" id="scsList" style="list-style-type: none">
+			<a aria-expanded="false" class="dropdown-toggle">Sub-Carrier Spacing (SCS)</a>
+			<ul class="list-unstyled" id="SCSMenu">
+				<li>
+					<div>
+						<select name="scs" id="scs" class="custom-select custom-select-sm" onchange="scsOnchange();">
+							<option class='placeholder' selected="selected">Select Sub-Carrier Spacing</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" style="list-style-type: none">
+			<a aria-expanded="false" class="dropdown-toggle">Transmission Bandwidth</a>
+			<ul class="list-unstyled" id="transmissionMenu">
+				<li>
+					<div>
+						<select name="transmission" id="transmission" class="custom-select custom-select-sm">
+							<option class='placeholder' selected="selected">Select Transmission Bandwidth</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+
+		<div style="margin-top: 0.8rem; margin-left: 0rem; font-size: 17.6px; display: none;" id='dssOverhead'>
+			<a>DSS Channel</a>
+			<input class="form-check-input" type="checkbox" value="" id="dssOverheadCheckbox" style="align: right; margin-left: 7.8rem;">
+		</div>
+
+		<li class="active" id="mimoList" style="list-style-type: none">
+			<font color="yellow">
+				<a aria-expanded="false" class="dropdown-toggle">MIMO (Layers)</a>
+			</font>
+			<ul class="list-unstyled" id="MIMOMenu">
+				<li>
+					<div>
+						<select name="mimo" id="mimo" class="custom-select custom-select-sm">
+							<option class='placeholder' selected="selected">Select MIMO Layers</option>
+							<option value="1" id="mimo1">1</option>
+							<option value="2" id="mimo2">2</option>
+							<option value="3" id="mimo3">3</option>
+							<option value="4" id="mimo4">4</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<div style="margin-top: 0.8rem; margin-left: 0rem; font-size: 17.6px; display: none;" id='tbsSelect'>
+			<font color="yellow">
+				<label>TBS Index Mapping <h6 style="font-size:12.6px;color:yellow;font-weight:lighter;margin: bottom 0;">(3GPP TS 36.213 Table 7.1.7.2.1-1)</h6></label><input class="form-check-input" type="checkbox" value="" id="tbsCheckbox" style="align: right; margin-left: 1.1rem;" onclick="tbsClick();">
+			</font>
+		</div>
+
+		<div style="margin-top: 0.8rem; margin-left: 0rem; font-size: 17.6px; display: none;" id='moreAdvancedFeatures'>
+			<font color="yellow">
+				<label>MCS Tables <h6 style="font-size:12.6px; color:yellow; font-weight:lighter; margin: bottom 0;">(3GPP TS 38.214 Table 5.1.3.1-X)</h6></label>
+				<input class="form-check-input" type="checkbox" value="" id="moreAdvancedCheckbox" style="align: right; margin-left: 1.1rem;" onclick="moreAdvancedClick()">
+            </font>
+        </div>
+
+		<li class="active" id="mcsTableList" style="display: none; list-style-type: none">
+			<font color="yellow">
+				<a aria-expanded="false" class="dropdown-toggle">MCS Table</a>
+			</font>
+
+			<ul class="list-unstyled">
+				<li>
+					<div>
+						<select name="mcsTable" id="mcsTable" class="custom-select custom-select-sm" onchange="mcsOnchange();">
+							<option class='placeholder' selected="selected">Select MCS Table</option>
+							<option value="table1">Table 1</option>
+							<option value="table2">Table 2</option>
+							<option value="table3">Table 3</option>
+							<option value="table4">Table 4</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" id="mcsIndexList" style="display: none; list-style-type: none">
+			<font color="yellow">
+				<a aria-expanded="false" class="dropdown-toggle">MCS Index</a>
+			</font>
+			<ul class="list-unstyled">
+				<li>
+					<div>
+						<select name="mcsIndexMenu" id="mcsIndexMenu" class="custom-select custom-select-sm">
+							<option class='placeholder' selected="selected">Select MCS Index</option>
+							<option value="0">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
+							<option value="14">14</option>
+							<option value="15">15</option>
+							<option value="16">16</option>
+							<option value="17">17</option>
+							<option value="18">18</option>
+							<option value="19">19</option>
+							<option value="20">20</option>
+							<option value="21">21</option>
+							<option value="22">22</option>
+							<option value="23">23</option>
+							<option value="24">24</option>
+							<option value="25">25</option>
+							<option value="26">26</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" id="modulationList" style="display: none; list-style-type: none">
+			<font color="yellow">
+				<a aria-expanded="false" class="dropdown-toggle">Modulation</a>
+			</font>
+			<ul class="list-unstyled" id="ModulationMenu">
+				<li>
+					<div>
+						<select name="modulation" id="modulation" class="custom-select custom-select-sm">
+							<option class='placeholder' selected="selected">Select Modulation</option>
+							<option value="qpsk">QPSK</option>
+							<option value="16qam" id="modu16">16-QAM</option>
+							<option value="64qam" id="modu64">64-QAM</option>
+							<option value="256qam" id="modu256">256-QAM</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" id="scalingList" style="display: none; list-style-type: none">
+			<font color="yellow">
+				<a aria-expanded="false" class="dropdown-toggle">Scaling Factor</a>
+			</font>
+			<ul class="list-unstyled" id="ScalingFactorMenu">
+				<li>
+					<div>
+						<select name="scalingfactor" id="scalingfactor" class="custom-select custom-select-sm" onchange="scalingFactorOnchange()">
+							<option class='placeholder' selected="selected">Select Scaling Factor</option>
+							<option value="0.4">0.4</option>
+							<option value="0.75">0.75</option>
+							<option value="0.8">0.8</option>
+							<option value="1" id="scaling1">1</option>
+							<option value="customScalingFactor">Custom Value</option>
+						</select>
+					</div>
+					<div id="customScalingFactorDiv" style="display: none; margin-top: 0.5rem;">
+						<input class="form-control form-control-sm" id="customScalingFactorValue" type="text" placeholder="Value b/w 0 and 1">
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" id="overheadList" style="display: block; list-style-type: none">
+			<font color="yellow">
+				<a aria-expanded="false" class="dropdown-toggle">Overhead</a>
+			</font>
+			<ul class="list-unstyled" id="OverheadMenu">
+				<li>
+					<div>
+						<select name="overhead" id="overhead" class="custom-select custom-select-sm" onchange="overheadOnchange();">
+							<option class='placeholder' selected="selected">Select Overhead</option>
+						</select>
+					</div>
+					<div id="customOverheadDiv" style="display: none; margin-top: 0.5rem;">
+						<input class="form-control form-control-sm" id="customOverheadValue" type="text" placeholder="Value b/w 0 and 1">
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" style="display:block; list-style-type: none">
+			<a aria-expanded="false" class="dropdown-toggle" id="efficiencyTitle">Efficiency Percentage</a>
+			<ul class="list-unstyled" id="efficiencyMenu">
+				<li>
+					<div>
+						<input class="form-control form-control-sm" id="efficiency" type="text" placeholder="Value b/w 0 and 100 (Default 90%)">
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<li class="active" id="multipleCarrier" style="display: none; font-size: 17.6px; list-style-type: none">
+			<a aria-expanded="false" class="dropdown-toggle">CA or EN-DC Overhead</a>
+			<ul class="list-unstyled" id="multipleCarrierMenu">
+				<li>
+					<div>
+						<input class="form-control form-control-sm" id="multipleCarrierOverhead" type="text" placeholder="Value b/w 0 and 100 (Default 0%)">
+					</div>
+				</li>
+			</ul>
+		</li>
+
+		<br>
+
+		<li class="active" style="list-style-type: none">
+			<div>
+				<button id="calculate" style="display: block; margin: 0 auto; " onclick="calculateThroughput()" data-toggle="modal" data-target="#errorModal">Calculate</button>
+			</div>
+		</li>
+
+	</nav>
+
+	<!-- Modal -->
+    <div class="modal fade" id="calculationModal" tabindex="-1" role="dialog" aria-labelledby="calculationModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="calculationModalLabel">Calculations</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="calculationBody">
+					<button style="display: block; margin: 0 auto; " onclick="download()">Download</button>
+					<p id="calculationModalBody0" style="font-size: 1em; font-weight: 400; color: #000000"></p>
+				</div>
+				<div class="modal-body" id="calculationCarrierFinal">
+					<p id="calculationCarrierFinal1" style="font-size: 1em; font-weight: 400; color: #000000"></p>
+				</div>
+			</div>
+		</div>
+    </div>
+
+	<!-- Adding tables in pills -->
+    <div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="tableModalLabel">MCS Tables</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="tableBody">
+					<button data-toggle="modal" style="display: block; margin: 5px; width: 20%" data-target="#tableModal1">MCS Table 1</button>
+					<button data-toggle="modal" style="display: block; margin: 5px; width: 20%" data-target="#tableModal2">MCS Table 2</button>
+					<button data-toggle="modal" style="display: block; margin: 5px; width: 20%" data-target="#tableModal3">MCS Table 3</button>
+					<button data-toggle="modal" style="display: block; margin: 5px; width: 20%" data-target="#tableModal4">MCS Table 4</button>
+				</div>
+			</div>
+		</div>
+    </div>
+
+	<div class="modal fade" id="tableModal1" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel1" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<dl>
+						<h5 class="modal-title" id="tableModalLabel1">MCS Table 1</h5>
+						<h6 id="mcsTable1h1"><small><br>3GPP Spec: 38.214 v17.3.0</small></h6>
+						<h6 id="mcsTable1h2"><small><br>Table 5.1.3.1-1</small></h6>
+					</dl>
+					<!-- <h7 id="mcsTable1h1"><small><br>3GPP Spec: 38.214 v17.3.0</small></h7> -->
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="tableBody">
+					<table id="mcs_table1">
+						<tr>
+							<th style="text-align:center">MCS Index</th>
+							<th style="text-align:center">Modulation Order</th>
+							<th style="text-align:center">Modulation Scheme</th>
+							<th style="text-align:center">Target Code Rate x [1024]</th>
+							<th style="text-align:center">Spectral Efficiency</th>
+							<th style="text-align:center">Target Code Rate</th>
+						</tr>
+						<tr>
+							<td style="text-align:center">0</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">120</td>
+							<td style="text-align:center">0.2344</td>
+							<td style="text-align:center">0.1171875</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">1</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">157</td>
+							<td style="text-align:center">0.3066</td>
+							<td style="text-align:center">0.153320313</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">193</td>
+							<td style="text-align:center">0.377</td>
+							<td style="text-align:center">0.188476563</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">3</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">251</td>
+							<td style="text-align:center">0.4902</td>
+							<td style="text-align:center">0.245117188</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">308</td>
+							<td style="text-align:center">0.6016</td>
+							<td style="text-align:center">0.30078125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">5</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">379</td>
+							<td style="text-align:center">0.7402</td>
+							<td style="text-align:center">0.370117188</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">449</td>
+							<td style="text-align:center">0.877</td>
+							<td style="text-align:center">0.438476563</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">7</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">526</td>
+							<td style="text-align:center">1.0273</td>
+							<td style="text-align:center">0.513671875</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">602</td>
+							<td style="text-align:center">1.1758</td>
+							<td style="text-align:center">0.587890625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">9</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">679</td>
+							<td style="text-align:center">1.3262</td>
+							<td style="text-align:center">0.663085938</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">10</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">340</td>
+							<td style="text-align:center">1.3281</td>
+							<td style="text-align:center">0.33203125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">11</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">378</td>
+							<td style="text-align:center">1.4766</td>
+							<td style="text-align:center">0.369140625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">12</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">434</td>
+							<td style="text-align:center">1.6953</td>
+							<td style="text-align:center">0.423828125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">13</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">490</td>
+							<td style="text-align:center">1.9141</td>
+							<td style="text-align:center">0.478515625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">14</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">553</td>
+							<td style="text-align:center">2.1602</td>
+							<td style="text-align:center">0.540039063</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">15</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">616</td>
+							<td style="text-align:center">2.4063</td>
+							<td style="text-align:center">0.6015625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">16</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">658</td>
+							<td style="text-align:center">2.5703</td>
+							<td style="text-align:center">0.642578125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">17</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">438</td>
+							<td style="text-align:center">2.5664</td>
+							<td style="text-align:center">0.427734375</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">18</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">466</td>
+							<td style="text-align:center">2.7305</td>
+							<td style="text-align:center">0.455078125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">19</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">517</td>
+							<td style="text-align:center">3.0293</td>
+							<td style="text-align:center">0.50488281</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">20</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">567</td>
+							<td style="text-align:center">3.3223</td>
+							<td style="text-align:center">0.553710938</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">21</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">616</td>
+							<td style="text-align:center">3.6094</td>
+							<td style="text-align:center">0.6015625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">22</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">666</td>
+							<td style="text-align:center">3.9023</td>
+							<td style="text-align:center">0.650390625</td>
+						</tr>
+						  <tr>
+							<td style="text-align:center">23</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">719</td>
+							<td style="text-align:center">4.2129</td>
+							<td style="text-align:center">0.702148438</td>
+						  </tr>
+						  <tr>
+							<td style="text-align:center">24</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">772</td>
+							<td style="text-align:center">4.5234</td>
+							<td style="text-align:center">0.75390625</td>
+						  </tr>
+						  <tr>
+							<td style="text-align:center">25</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">822</td>
+							<td style="text-align:center">4.8164</td>
+							<td style="text-align:center">0.802734375</td>
+						  </tr>
+						  <tr>
+							<td style="text-align:center">26</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">873</td>
+							<td style="text-align:center">5.1152</td>
+							<td style="text-align:center">0.852539063</td>
+						  </tr>
+						  <tr>
+							<td style="text-align:center">27</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">910</td>
+							<td style="text-align:center">5.332</td>
+							<td style="text-align:center">0.888671875</td>
+						  </tr>
+						  <tr>
+							<td style="text-align:center">28</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">948</td>
+							<td style="text-align:center">5.5547</td>
+							<td style="text-align:center">0.92578125</td>
+						  </tr>
+					</table>
+				</div>
+			</div>
+		</div>
+    </div>
+
+	<div class="modal fade" id="tableModal2" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel2" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<dl>
+						<h5 class="modal-title" id="tableModalLabel2">MCS Table 2</h5>
+						<h6 id="mcsTable2h1"><small><br>3GPP Spec: 38.214 v17.3.0</small></h6>
+						<h6 id="mcsTable2h2"><small><br>Table 5.1.3.1-2</small></h6>
+					</dl>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="tableBody">
+					<table id="mcs_table2">
+						<tr>
+							<th style="text-align:center">MCS Index</th>
+							<th style="text-align:center">Modulation Order</th>
+							<th style="text-align:center">Modulation Scheme</th>
+							<th style="text-align:center">Target Code Rate x [1024]</th>
+							<th style="text-align:center">Spectral Efficiency</th>
+							<th style="text-align:center">Target Code Rate</th>
+						</tr>
+						<tr>
+							<td style="text-align:center">0</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">120</td>
+							<td style="text-align:center">0.2344</td>
+							<td style="text-align:center">0.1171875</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">1</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">193</td>
+							<td style="text-align:center">0.377</td>
+							<td style="text-align:center">0.188476563</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">308</td>
+							<td style="text-align:center">0.6016</td>
+							<td style="text-align:center">0.30078125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">3</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">449</td>
+							<td style="text-align:center">0.877</td>
+							<td style="text-align:center">0.438476563</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">602</td>
+							<td style="text-align:center">1.1758</td>
+							<td style="text-align:center">0.587890625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">5</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">378</td>
+							<td style="text-align:center">1.4766</td>
+							<td style="text-align:center">0.369140625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">434</td>
+							<td style="text-align:center">1.6953</td>
+							<td style="text-align:center">0.423828125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">7</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">490</td>
+							<td style="text-align:center">1.9141</td>
+							<td style="text-align:center">0.478515625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">553</td>
+							<td style="text-align:center">2.1602</td>
+							<td style="text-align:center">0.540039063</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">9</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">616</td>
+							<td style="text-align:center">2.4063</td>
+							<td style="text-align:center">0.6015625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">10</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">658</td>
+							<td style="text-align:center">2.5703</td>
+							<td style="text-align:center">0.642578125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">11</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">466</td>
+							<td style="text-align:center">2.7305</td>
+							<td style="text-align:center">0.455078125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">12</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">517</td>
+							<td style="text-align:center">3.0293</td>
+							<td style="text-align:center">0.504882813</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">13</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">567</td>
+							<td style="text-align:center">3.3223</td>
+							<td style="text-align:center">0.553710938</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">14</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">616</td>
+							<td style="text-align:center">3.6094</td>
+							<td style="text-align:center">0.6015625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">15</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">666</td>
+							<td style="text-align:center">3.9023</td>
+							<td style="text-align:center">0.650390625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">16</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">719</td>
+							<td style="text-align:center">4.2129</td>
+							<td style="text-align:center">0.702148438</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">17</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">772</td>
+							<td style="text-align:center">4.5234</td>
+							<td style="text-align:center">0.75390625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">18</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">822</td>
+							<td style="text-align:center">4.8164</td>
+							<td style="text-align:center">0.802734375</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">19</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">873</td>
+							<td style="text-align:center">5.1152</td>
+							<td style="text-align:center">0.852539063</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">20</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">682.5</td>
+							<td style="text-align:center">5.332</td>
+							<td style="text-align:center">0.666503906</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">21</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">711</td>
+							<td style="text-align:center">5.5547</td>
+							<td style="text-align:center">0.694335938</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">22</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">754</td>
+							<td style="text-align:center">5.8906</td>
+							<td style="text-align:center">0.736328125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">23</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">797</td>
+							<td style="text-align:center">6.2266</td>
+							<td style="text-align:center">0.778320313</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">24</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">841</td>
+							<td style="text-align:center">6.5703</td>
+							<td style="text-align:center">0.821289063</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">25</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">885</td>
+							<td style="text-align:center">6.9141</td>
+							<td style="text-align:center">0.864257813</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">26</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">916.5</td>
+							<td style="text-align:center">7.1602</td>
+							<td style="text-align:center">0.895019531</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">27</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">948</td>
+							<td style="text-align:center">7.4063</td>
+							<td style="text-align:center">0.92578125</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+    </div>
+
+    <div class="modal fade" id="tableModal3" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel3" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<dl>
+					  <h5 class="modal-title" id="tableModalLabel3">MCS Table 3</h5>
+					  <h6 id="mcsTable3h1"><small><br>3GPP Spec: 38.214 v17.3.0</small></h6>
+					  <h6 id="mcsTable3h2"><small><br>Table 5.1.3.1-3</small></h6>
+					</dl>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="tableBody">
+					<table id="mcs_table3">
+						<tr>
+							<th style="text-align:center">MCS Index</th>
+							<th style="text-align:center">Modulation Order</th>
+							<th style="text-align:center">Modulation Scheme</th>
+							<th style="text-align:center">Target Code Rate x [1024]</th>
+							<th style="text-align:center">Spectral Efficiency</th>
+							<th style="text-align:center">Target Code Rate</th>
+						</tr>
+						<tr>
+							<td style="text-align:center">0</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">30</td>
+							<td style="text-align:center">0.0586</td>
+							<td style="text-align:center">0.029296875</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">1</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">40</td>
+							<td style="text-align:center">0.0781</td>
+							<td style="text-align:center">0.0390625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">50</td>
+							<td style="text-align:center">0.0977</td>
+							<td style="text-align:center">0.048828125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">3</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">64</td>
+							<td style="text-align:center">0.125</td>
+							<td style="text-align:center">0.0625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">78</td>
+							<td style="text-align:center">0.1523</td>
+							<td style="text-align:center">0.076171875</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">5</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">99</td>
+							<td style="text-align:center">0.1934</td>
+							<td style="text-align:center">0.096679688</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">120</td>
+							<td style="text-align:center">0.2344</td>
+							<td style="text-align:center">0.1171875</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">7</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">157</td>
+							<td style="text-align:center">0.3066</td>
+							<td style="text-align:center">0.153320313</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">193</td>
+							<td style="text-align:center">0.3770</td>
+							<td style="text-align:center">0.188476563</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">9</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">251</td>
+							<td style="text-align:center">0.4902</td>
+							<td style="text-align:center">0.245117188</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">10</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">308</td>
+							<td style="text-align:center">0.6016</td>
+							<td style="text-align:center">0.30078125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">11</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">379</td>
+							<td style="text-align:center">0.7402</td>
+							<td style="text-align:center">0.370117188</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">12</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">449</td>
+							<td style="text-align:center">0.8770</td>
+							<td style="text-align:center">0.438476563</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">13</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">526</td>
+							<td style="text-align:center">1.0273</td>
+							<td style="text-align:center">0.513671875</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">14</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">602</td>
+							<td style="text-align:center">1.1758</td>
+							<td style="text-align:center">0.587890625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">15</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">340</td>
+							<td style="text-align:center">1.3281</td>
+							<td style="text-align:center">0.33203125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">16</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">378</td>
+							<td style="text-align:center">1.4766</td>
+							<td style="text-align:center">0.369140625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">17</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">434</td>
+							<td style="text-align:center">1.6953</td>
+							<td style="text-align:center">0.423828125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">18</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">490</td>
+							<td style="text-align:center">1.9141</td>
+							<td style="text-align:center">0.478515625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">19</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">553</td>
+							<td style="text-align:center">2.1602</td>
+							<td style="text-align:center">0.540039063</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">20</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">616</td>
+							<td style="text-align:center">2.4063</td>
+							<td style="text-align:center">0.6015625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">21</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">438</td>
+							<td style="text-align:center">2.5664</td>
+							<td style="text-align:center">0.427734375</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">22</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">466</td>
+							<td style="text-align:center">2.7305</td>
+							<td style="text-align:center">0.455078125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">23</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">517</td>
+							<td style="text-align:center">3.0293</td>
+							<td style="text-align:center">0.504882813</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">24</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">567</td>
+							<td style="text-align:center">3.3223</td>
+							<td style="text-align:center">0.553710938</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">25</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">616</td>
+							<td style="text-align:center">3.6094</td>
+							<td style="text-align:center">0.6015625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">26</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">666</td>
+							<td style="text-align:center">3.9023</td>
+							<td style="text-align:center">0.650390625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">27</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">719</td>
+							<td style="text-align:center">4.2129</td>
+							<td style="text-align:center">0.702148438</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">28</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">772</td>
+							<td style="text-align:center">4.5234</td>
+							<td style="text-align:center">0.75390625</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+    </div>
+
+    <div class="modal fade" id="tableModal4" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel4" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<dl>
+						<h5 class="modal-title" id="tableModalLabel4">MCS Table 4</h5>
+						<h6 id="mcsTable4h1"><small><br>3GPP Spec: 38.214 v17.3.0</small></h6>
+						<h6 id="mcsTable4h2"><small><br>Table 5.1.3.1-4</small></h6>
+					</dl>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="tableBody">
+					<table id="mcs_table3">
+						<tr>
+							<th style="text-align:center">MCS Index</th>
+							<th style="text-align:center">Modulation Order</th>
+							<th style="text-align:center">Modulation Scheme</th>
+							<th style="text-align:center">Target Code Rate x [1024]</th>
+							<th style="text-align:center">Spectral Efficiency</th>
+							<th style="text-align:center">Target Code Rate</th>
+						</tr>
+						<tr>
+							<td style="text-align:center">0</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">120</td>
+							<td style="text-align:center">0.2344</td>
+							<td style="text-align:center">0.1171875</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">1</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">193</td>
+							<td style="text-align:center">0.377</td>
+							<td style="text-align:center">0.188476563</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">2</td>
+							<td style="text-align:center">QPSK</td>
+							<td style="text-align:center">449</td>
+							<td style="text-align:center">0.877</td>
+							<td style="text-align:center">0.438476563</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">3</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">378</td>
+							<td style="text-align:center">1.4766</td>
+							<td style="text-align:center">0.369140625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">490</td>
+							<td style="text-align:center">1.9141</td>
+							<td style="text-align:center">0.478515625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">5</td>
+							<td style="text-align:center">4</td>
+							<td style="text-align:center">16QAM</td>
+							<td style="text-align:center">490</td>
+							<td style="text-align:center">1.9141</td>
+							<td style="text-align:center">0.478515625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">466</td>
+							<td style="text-align:center">2.7305</td>
+							<td style="text-align:center">0.455078125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">7</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">517</td>
+							<td style="text-align:center">3.0293</td>
+							<td style="text-align:center">0.504882813</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">567</td>
+							<td style="text-align:center">3.3223</td>
+							<td style="text-align:center">0.553710938</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">9</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">616</td>
+							<td style="text-align:center">3.6094</td>
+							<td style="text-align:center">0.6015625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">10</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">666</td>
+							<td style="text-align:center">3.9023</td>
+							<td style="text-align:center">0.650390625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">11</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">719</td>
+							<td style="text-align:center">4.2129</td>
+							<td style="text-align:center">0.702148438</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">12</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">772</td>
+							<td style="text-align:center">4.5234</td>
+							<td style="text-align:center">0.75390625</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">13</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">822</td>
+							<td style="text-align:center">4.8164</td>
+							<td style="text-align:center">0.802734375</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">14</td>
+							<td style="text-align:center">6</td>
+							<td style="text-align:center">64QAM</td>
+							<td style="text-align:center">873</td>
+							<td style="text-align:center">5.1152</td>
+							<td style="text-align:center">0.852539063</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">15</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">682.5</td>
+							<td style="text-align:center">5.332</td>
+							<td style="text-align:center">0.666503906</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">16</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">711</td>
+							<td style="text-align:center">5.5547</td>
+							<td style="text-align:center">0.694335938</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">17</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">754</td>
+							<td style="text-align:center">5.8906</td>
+							<td style="text-align:center">0.736328125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">18</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">797</td>
+							<td style="text-align:center">6.2266</td>
+							<td style="text-align:center">0.778320313</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">19</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">841</td>
+							<td style="text-align:center">6.5703</td>
+							<td style="text-align:center">0.821289063</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">20</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">885</td>
+							<td style="text-align:center">6.9141</td>
+							<td style="text-align:center">0.864257813</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">21</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">916.5</td>
+							<td style="text-align:center">7.1602</td>
+							<td style="text-align:center">0.895019531</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">22</td>
+							<td style="text-align:center">8</td>
+							<td style="text-align:center">256QAM</td>
+							<td style="text-align:center">948</td>
+							<td style="text-align:center">7.4063</td>
+							<td style="text-align:center">0.92578125</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">23</td>
+							<td style="text-align:center">10</td>
+							<td style="text-align:center">1024QAM</td>
+							<td style="text-align:center">805.5</td>
+							<td style="text-align:center">7.8662</td>
+							<td style="text-align:center">0.786621094</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">24</td>
+							<td style="text-align:center">10</td>
+							<td style="text-align:center">1024QAM</td>
+							<td style="text-align:center">853</td>
+							<td style="text-align:center">8.3301</td>
+							<td style="text-align:center">0.833007813</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">25</td>
+							<td style="text-align:center">10</td>
+							<td style="text-align:center">1024QAM</td>
+							<td style="text-align:center">900.5</td>
+							<td style="text-align:center">8.7939</td>
+							<td style="text-align:center">0.879394531</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">26</td>
+							<td style="text-align:center">10</td>
+							<td style="text-align:center">1024QAM</td>
+							<td style="text-align:center">948</td>
+							<td style="text-align:center">9.2578</td>
+							<td style="text-align:center">0.92578125</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+    </div>
+
+    <div class="modal fade" id="NRtableModal" tabindex="-1" role="dialog" aria-labelledby="NRtableModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="NRtableModalLabel">NR RB Tables</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="tableBody">
+					<button data-toggle="modal" style="display: block; margin: 5px; width: 20%" data-target="#NRtableModal1">FR1</button>
+					<button data-toggle="modal" style="display: block; margin: 5px; width: 20%" data-target="#NRtableModal2">FR2</button>
+				</div>
+			</div>
+		</div>
+    </div>
+
+    <div class="modal fade modal-wide" id="NRtableModal1" tabindex="-1" role="dialog" aria-labelledby="NRtableModalLabel2" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="NRtableModalLabel1">NRB FR1 Table</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="tableBody">
+					<table id="nrb_table1">
+						<tr>
+							<th style="text-align:center">SCS (kHz)</th>
+							<th style="text-align:center">5 MHz</th>
+							<th style="text-align:center">10 MHz</th>
+							<th style="text-align:center">15 MHz</th>
+							<th style="text-align:center">20 MHz</th>
+							<th style="text-align:center">25 MHz</th>
+							<th style="text-align:center">30 MHz</th>
+							<th style="text-align:center">35 MHz</th>
+							<th style="text-align:center">40 MHz</th>
+							<th style="text-align:center">45 MHz</th>
+							<th style="text-align:center">50 MHz</th>
+							<th style="text-align:center">60 MHz</th>
+							<th style="text-align:center">70 MHz</th>
+							<th style="text-align:center">80 MHz</th>
+							<th style="text-align:center">90 MHz</th>
+							<th style="text-align:center">100 MHz</th>
+						</tr>
+						<tr>
+							<td style="text-align:center">15</td>
+							<td style="text-align:center">25</td>
+							<td style="text-align:center">52</td>
+							<td style="text-align:center">79</td>
+							<td style="text-align:center">106</td>
+							<td style="text-align:center">133</td>
+							<td style="text-align:center">160</td>
+							<td style="text-align:center">188</td>
+							<td style="text-align:center">216</td>
+							<td style="text-align:center">242</td>
+							<td style="text-align:center">270</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">30</td>
+							<td style="text-align:center">11</td>
+							<td style="text-align:center">24</td>
+							<td style="text-align:center">38</td>
+							<td style="text-align:center">51</td>
+							<td style="text-align:center">65</td>
+							<td style="text-align:center">78</td>
+							<td style="text-align:center">92</td>
+							<td style="text-align:center">106</td>
+							<td style="text-align:center">119</td>
+							<td style="text-align:center">133</td>
+							<td style="text-align:center">162</td>
+							<td style="text-align:center">189</td>
+							<td style="text-align:center">217</td>
+							<td style="text-align:center">245</td>
+							<td style="text-align:center">273</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">60</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">11</td>
+							<td style="text-align:center">18</td>
+							<td style="text-align:center">24</td>
+							<td style="text-align:center">31</td>
+							<td style="text-align:center">38</td>
+							<td style="text-align:center">44</td>
+							<td style="text-align:center">51</td>
+							<td style="text-align:center">58</td>
+							<td style="text-align:center">65</td>
+							<td style="text-align:center">79</td>
+							<td style="text-align:center">93</td>
+							<td style="text-align:center">107</td>
+							<td style="text-align:center">121</td>
+							<td style="text-align:center">135</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+    </div>
+
+	<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true" display='block'>
+  		<div class="modal-dialog" role="document">
+    		<div class="modal-content">
+      			<div class="modal-header">
+        			<h5 class="modal-title" id="errorModalLabel">Message</h5>
+        			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          				<span aria-hidden="true">&times;</span>
+        			</button>
+      			</div>
+      			<div class="modal-body">
+					  <p id="errorBody">Error!</p>
+      			</div>
+      			<div class="modal-footer">
+        			<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      			</div>
+    		</div>
+  		</div>
+	</div>
+
+    <div class="modal fade modal-wide" id="NRtableModal2" tabindex="-1" role="dialog" aria-labelledby="NRtableModalLabel2" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="NRtableModalLabel2">NRB FR2 Table</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body" id="tableBody">
+					<table id="nrb_table2">
+						<tr>
+							<th style="text-align:center">SCS (kHz)</th>
+							<th style="text-align:center">50 MHz</th>
+							<th style="text-align:center">100 MHz</th>
+							<th style="text-align:center">200 MHz</th>
+							<th style="text-align:center">400 MHz</th>
+							<th style="text-align:center">800 MHz</th>
+							<th style="text-align:center">1600 MHz</th>
+							<th style="text-align:center">2000 MHz</th>
+						</tr>
+						<tr>
+							<td style="text-align:center">60</td>
+							<td style="text-align:center">66</td>
+							<td style="text-align:center">132</td>
+							<td style="text-align:center">264</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">120</td>
+							<td style="text-align:center">32</td>
+							<td style="text-align:center">66</td>
+							<td style="text-align:center">132</td>
+							<td style="text-align:center">264</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">480</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">66</td>
+							<td style="text-align:center">124</td>
+							<td style="text-align:center">248</td>
+							<td style="text-align:center">N/A</td>
+						</tr>
+						<tr>
+							<td style="text-align:center">960</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">N/A</td>
+							<td style="text-align:center">33</td>
+							<td style="text-align:center">62</td>
+							<td style="text-align:center">124</td>
+							<td style="text-align:center">148</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+    </div>
+  </body>
+
+</html>
